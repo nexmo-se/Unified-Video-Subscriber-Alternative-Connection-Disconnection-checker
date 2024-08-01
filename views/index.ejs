@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="/css/style.css" />
+		<script src="/node_modules/@opentok/client/dist/js/opentok.min.js"></script>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	</head>
+	<body>
+		<div class="title" style="padding: 10px; background-color: white; height: 230px;">
+			Share this link for people to join<br /><input
+				type="text"
+				style="margin: 10px; width: calc(100% - 500px);"
+				id="link"
+				value="Starting Session"
+				readonly
+			/>
+			<button onclick="copyLink('link')">Copy Link</button><br /><br />
+
+			Use this link to create tokens<br /><input
+				type="text"
+				style="margin: 10px; width: calc(100% - 500px);"
+				id="token"
+				value="Starting Session"
+				readonly
+			/>
+			<button onclick="copyLink('token')">Copy Link</button><br /><br />
+			<br /><br />
+			<span>
+				<button
+					id="video_button"
+					style="color: white; padding: 5px; background-color: darkgreen;"
+					onclick="toggleVideo()">
+					Stop Video</button>
+			</span>
+
+			<span>
+				<button
+					id="audio_button"
+					style="color: white; padding: 5px; background-color: darkgreen;"
+					onclick="toggleAudio()">
+					Stop Audio</button>
+			</span>
+		</div>
+		
+
+		<div>
+			<div id="subscriber"></div>
+			<div id="publisher"></div>
+		</div>
+
+		<script src="/js/client.js"  type="module"></script>
+	</body>
+</html>
+<script>
+	var video_on = true;
+	var audio_on = true;
+	var publisher_obj;
+	$(async function () {
+		startSession('<%=sessionId%>', '<%=token%>', '<%=apiKey%>').then(function (result) {
+			$('#link').val(window.location.protocol+"//" + window.location.hostname+'/<%=sessionId%>/join');
+			$('#token').val(window.location.protocol+"//" + window.location.hostname+'/<%=sessionId%>/token');
+		});
+	});
+
+	function toggleVideo() {
+		var button = $('#video_button');
+		//turn on
+		if (video_on == false) {
+			button.text('Stop Video');
+			button.css('background-color', 'darkgreen');
+			video_on = true
+			publisher_obj.publishVideo(video_on);
+		//turn off
+		} else {
+			button.text('Start Video');
+			button.css('background-color', 'darkslategrey');
+			video_on = false
+			publisher_obj.publishVideo(video_on);
+		}
+	}
+
+	function toggleAudio() {
+		var button = $('#audio_button');
+		//turn on
+		if (audio_on == false) {
+			button.text('Stop Audio');
+			button.css('background-color', 'darkgreen');
+			audio_on = true
+			publisher_obj.publishAudio(audio_on);
+		//turn off
+		} else {
+			button.text('Start Audio');
+			button.css('background-color', 'darkslategrey');
+			audio_on = false
+			publisher_obj.publishAudio(audio_on);
+		}
+	}
+
+	function copyLink(id) {
+		var copyText = document.getElementById(id);
+		copyText.select();
+		copyText.setSelectionRange(0, 99999);
+		document.execCommand('copy');
+	}
+
+	
+</script>
