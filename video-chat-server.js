@@ -5,6 +5,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var app = express();
+const { Auth } = require('@vonage/auth');
+const { Video } = require('@vonage/video');
 app.set('view engine', 'ejs'); 
 app.use(logger('dev'));
 app.use(cors());
@@ -16,28 +18,30 @@ app.use('/node_modules', express.static(path.join(__dirname, '/node_modules/')))
 app.enable('trust proxy');
 
 //initiate opentok
-const apiKey = process.env.API_KEY;
-const apiSecret = process.env.SECRET;
+const appId = process.env.APP_ID;
 const port = process.env.PORT;
 
-var OpenTok = require('opentok');
-var opentok = new OpenTok(apiKey, apiSecret);
+const credentials = new Auth({
+  applicationId: appId,
+  privateKey: "private.key",
+});
+
+// var OpenTok = require('opentok');
+// var opentok = new OpenTok(appId, apiSecret);
+const options = {};
+const videoClient = new Video(credentials, options);
 var sessionId = null;
 
-function new_session(res, req) {
-	opentok.createSession({ mediaMode: 'routed' }, function (err, session) {
-		if(err){
-			console.log(err)
-		}
-		console.log(session)
-		sessionId = session.sessionId;
-		console.log(sessionId)
-		token = opentok.generateToken(sessionId);
-		res.render('index.ejs', {
-			sessionId: sessionId,
-			token: token,
-			apiKey: apiKey
-		});
+async function new_session(res, req) {
+	const session = await videoClient.createSession({ mediaMode: 'routed' })
+	console.log(session)
+	sessionId = session.sessionId;
+	console.log(sessionId)
+	token = videoClient.generateClientToken(sessionId)
+	res.render('index.ejs', {
+		sessionId: sessionId,
+		token: token,
+		appId: appId
 	});
 }
 
@@ -46,31 +50,31 @@ app.get('/', function (req, res) {
 });
 
 app.get('/:sessionId', function (req, res) {
-	token = opentok.generateToken(sessionId);
+	token = videoClient.generateClientToken(sessionId);
 	res.render('index.ejs', {
 		sessionId: sessionId,
 		token: token,
-		apiKey: apiKey
+		appId: appId
 	});
 });
 
 app.get('/:sessionId/join', function (req, res) {
 	console.log(req.params);
 	sessionId = req.params['sessionId'];
-	token = opentok.generateToken(sessionId);
+	token = videoClient.generateClientToken(sessionId);
 	res.render('index.ejs', {
 		sessionId: sessionId,
 		token: token,
-		apiKey: apiKey, 
+		appId: appId, 
 	});
 });
 
 app.get('/:sessionId/token', function (req, res) {
 	sessionId = req.params['sessionId'];
 	role = req.query['role'] || 'publisher';	
-	token = opentok.generateToken(sessionId,{role:role});
-	params = `${apiKey} ${sessionId} ${token} true`
-	return res.json({session_id:sessionId, token:token, apiKey:apiKey, role:role, commandParams: params})
+	token = videoClient.generateClientToken(sessionId,{role:role});
+	params = `${appId} ${sessionId} ${token} true`
+	return res.json({session_id:sessionId, token:token, appId:appId, role:role, commandParams: params})
 });
 
 

@@ -58,7 +58,7 @@
 	var audio_on = true;
 	var publisher_obj;
 	$(async function () {
-		startSession('<%=sessionId%>', '<%=token%>', '<%=apiKey%>').then(function (result) {
+		startSession('<%=sessionId%>', '<%=token%>', '<%=appId%>').then(function (result) {
 			$('#link').val(window.location.protocol+"//" + window.location.hostname+'/<%=sessionId%>/join');
 			$('#token').val(window.location.protocol+"//" + window.location.hostname+'/<%=sessionId%>/token');
 		});

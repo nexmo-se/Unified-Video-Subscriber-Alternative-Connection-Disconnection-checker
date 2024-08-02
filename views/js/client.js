@@ -1,7 +1,7 @@
 var session = '';
 var stream_name = "video";
 const interval = 5000;
-window.startSession =(sessionId, token, apiKey) => {
+window.startSession =(sessionId, token, appId) => {
 
 	const queryString = window.location.search;
 	
@@ -32,7 +32,7 @@ window.startSession =(sessionId, token, apiKey) => {
 		
 	
 
-	session = OT.initSession(apiKey, sessionId);
+	session = OT.initSession(appId, sessionId);
 	session.connect(token, async function (err) {
 		var currentVideoPackets;
 		var currentAudioPackets;
