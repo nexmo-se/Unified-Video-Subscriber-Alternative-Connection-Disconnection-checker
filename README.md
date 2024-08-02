@@ -1,4 +1,4 @@
-# **Opentok Subscriber Alternative Connection/Disconnection checker**
+# **Unified Video Subscriber Alternative Connection/Disconnection checker**
 
 This Application is a workaround for a bug in MacOS where our browser SDK cannot detect connection or disconnection for participants with intermittent network.
 
@@ -13,23 +13,24 @@ Copy `.env.samp` file as `.env` and put in the values for the following:
  
  
 
- - **API_KEY**
-	- Your Opentok API Key
-- **SECRET**
-	- Your Opentok Secret
+ - **APP_ID**
+	- Your VONAGE App ID
 - **PORT**
 	- port where we run this service
 
-## **3. Running**
+## **3. Add your private key**
+Open `private.key` and put your actual private key here
+
+## **4. Running**
 
     node video-chat-server.js
 
-## **4. How this works**
+## **5. How this works**
 When deployed, point your web browser to the IP and Port where the server is running. You will see a simple UI with your Publisher view, a text box with the join link and a text box for token generation link. It also has buttons for disabling and enabling audio and video.
 
 To let another user join you, just copy the join link and let that user use it.
 
-## **5. Alternative Connection/Disconnection Detection**
+## **6. Alternative Connection/Disconnection Detection**
 Inside ``views/js/client.js``, starting at line 72, will be the alternative detection algorithm. You can add your logic in there for when the subscribers are detected to be disconnecting or reconnecting.
 
 We are generally following this algorithm
