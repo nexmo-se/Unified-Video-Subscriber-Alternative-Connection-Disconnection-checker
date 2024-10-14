@@ -1,6 +1,6 @@
 # **Unified Video Subscriber Alternative Connection/Disconnection checker**
 
-This Application is a workaround for a bug in MacOS where our browser SDK cannot detect connection or disconnection for participants with intermittent network.
+This Application is a workaround for a bug in MacOS where our browser SDK cannot detect connection or disconnection for participants with intermittent network. 
 
 # **Deployment Guide**
 
